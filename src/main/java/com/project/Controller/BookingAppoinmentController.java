@@ -1,5 +1,6 @@
 package com.project.Controller;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
@@ -20,8 +21,9 @@ import com.project.model.BookingAppointment;
 import com.project.service.BookingAppoinmentService;
 
 import jakarta.validation.Valid;
+import lombok.extern.slf4j.Slf4j;
 
-
+@Slf4j
 @RestController
 @RequestMapping("/BookAppointment")
 @CrossOrigin("*")
@@ -41,8 +43,26 @@ public class BookingAppoinmentController {
 @PostMapping("/Book")
 public ResponseEntity<?> bookingDone(@Valid @RequestBody BookingAppointment appointment) {
     try {
-        BookingAppointment bookedAppointment = bookAppoService.bookingDone(appointment);
-        return ResponseEntity.status(HttpStatus.CREATED).body(bookedAppointment);
+//        BookingAppointment bookedAppointment = bookAppoService.bookingDone(appointment);
+//        return ResponseEntity.status(HttpStatus.CREATED).body(bookedAppointment);
+    	
+    	
+    	try {
+			
+    		bookAppoService.bookingDone(appointment);
+			  log.info("mail sending");
+			  bookAppoService.sendingMail(appointment.getFirstName(),appointment.getEmail(),appointment.getAppointmentTime());
+			  log.info("mail done");
+			  
+			  return new ResponseEntity<>("register successfully!",HttpStatus.OK);
+			
+		} catch (Exception e) {
+			 log.error("Error occurred while registering and sending email: ", e);
+			return new ResponseEntity<>("internal server error",HttpStatus.INTERNAL_SERVER_ERROR);
+		}
+	   
+        
+        
     } catch (IllegalArgumentException e) {
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Invalid appointment data: " + e.getMessage());
     } catch (Exception e) {

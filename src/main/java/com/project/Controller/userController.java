@@ -21,7 +21,9 @@ import com.project.model.userRegister;
 import com.project.repository.UserRepository;
 import com.project.service.UserService;
 
+import lombok.extern.slf4j.Slf4j;
 
+@Slf4j
 @RestController
 @RequestMapping("/user")
 @CrossOrigin("*")
@@ -35,7 +37,21 @@ public class userController {
 
 	@PostMapping("/register")
 	public ResponseEntity<?> register(@RequestBody userRegister user) {
-	    return userService.register(user);
+		
+		try {
+			
+			  userService.register(user);
+			  log.info("mail sending");
+			  userService.registerMail(user.getUserName(),user.getEmail());
+			  log.info("mail done");
+			  
+			  return new ResponseEntity<>("register successfully!",HttpStatus.OK);
+			
+		} catch (Exception e) {
+			 log.error("Error occurred while registering and sending email: ", e);
+			return new ResponseEntity<>("internal server error",HttpStatus.INTERNAL_SERVER_ERROR);
+		}
+	   
 	}
 	
 		
