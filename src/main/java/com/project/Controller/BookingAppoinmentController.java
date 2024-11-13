@@ -2,6 +2,7 @@ package com.project.Controller;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -45,16 +46,21 @@ public ResponseEntity<?> bookingDone(@Valid @RequestBody BookingAppointment appo
     try {
 //        BookingAppointment bookedAppointment = bookAppoService.bookingDone(appointment);
 //        return ResponseEntity.status(HttpStatus.CREATED).body(bookedAppointment);
-    	
-    	
     	try {
 			
-    		bookAppoService.bookingDone(appointment);
-			  log.info("mail sending");
+    	BookingAppointment bookingAppointment =	bookAppoService.bookingDone(appointment);
+    	
+    
+    	if(Objects.nonNull(bookingAppointment.getEmail())) {
+    		 log.info("mail sending");
 			  bookAppoService.sendingMail(appointment.getFirstName(),appointment.getEmail(),appointment.getAppointmentTime());
 			  log.info("mail done");
-			  
-			  return new ResponseEntity<>("register successfully!",HttpStatus.OK);
+			  return new ResponseEntity<>("booked ",HttpStatus.OK);
+    	} else {
+    		 return new ResponseEntity<>("error occurs ",HttpStatus.INTERNAL_SERVER_ERROR);
+    	}
+    	 
+			 
 			
 		} catch (Exception e) {
 			 log.error("Error occurred while registering and sending email: ", e);

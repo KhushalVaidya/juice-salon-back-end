@@ -64,7 +64,7 @@ public class BookingAppoinmentService {
 	                + "\n\nThank you for booking an appointment with Juice Salon!"
 	                + "\nYour appointment has been successfully scheduled, and we’re excited to provide you with our premium salon services."
 	                + "\nPlease check your appointment details and arrive a few minutes early to ensure a seamless experience."
-	                +formattedAppointmentTime
+	                +"\nAppointment Date and time "+formattedAppointmentTime
 	                + "\n\nBest regards,\nTeam Juice Salon"
 	                + "\n\n\n*** Please note that this is an automatically generated email that cannot receive replies ***";
 
